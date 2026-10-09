@@ -1,0 +1,20 @@
+{
+  "name": "bobasplace-game-duck-racing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot dev.ts",
+    "build": "tsc -b && bun build.ts",
+    "preview": "bunx serve dist"
+  },
+  "dependencies": {
+    "@dimforge/rapier2d-compat": "^0.20.0",
+    "pixi-viewport": "^6.0.3",
+    "pixi.js": "^8.15.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "~5.9.3"
+  }
+}
