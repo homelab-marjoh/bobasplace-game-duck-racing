@@ -6,7 +6,7 @@ import type { Point } from './track/geometry'
 const SHAKE_DECAY = 3 // per second
 const SHAKE_PIXELS = 16
 
-/** Follows Boba with a little lookahead, zooms to the screen size, and shakes on impacts. */
+/** Follows your duck with a little lookahead, zooms to the screen size, and shakes on impacts. */
 export class Camera {
   private x = 0
   private y = 0

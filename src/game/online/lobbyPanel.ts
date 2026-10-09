@@ -1,4 +1,4 @@
-import { BOBA_COLOR, RIVAL_COLORS } from '../entities/duck'
+import { PLAYER_COLOR, RIVAL_COLORS } from '../entities/duck'
 import { COURSES } from '../track/courses'
 import { formatTime } from '../ui/hud'
 import { MAX_NAME_LENGTH, ROOM_CODE_LENGTH, type ResultEntry, type RoomInfo } from './protocol'
@@ -96,7 +96,7 @@ export class LobbyPanel {
     const course = COURSES.find((c) => c.id === room.course)?.name ?? room.course
     const players = room.players
       .map((p) => {
-        const color = p.id === you ? BOBA_COLOR : RIVAL_COLORS[p.color % RIVAL_COLORS.length]
+        const color = p.id === you ? PLAYER_COLOR : RIVAL_COLORS[p.color % RIVAL_COLORS.length]
         const tags = [p.id === you && 'you', p.id === room.hostId && 'host'].filter(Boolean).join(', ')
         return `<li><span class="dot" style="background:#${color.toString(16).padStart(6, '0')}"></span>${escape(p.name)}${tags ? ` <span class="muted">(${tags})</span>` : ''}</li>`
       })

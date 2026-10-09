@@ -8,9 +8,9 @@ export const MAX_FRAME_TIME = 0.1
 // Seconds of 3-2-1 before the clock starts
 export const COUNTDOWN = 3
 // localStorage keys: best times get the course id appended
-export const BEST_TIME_KEY = 'bobas-game:best-time'
-export const LAST_TRACK_KEY = 'bobas-game:track'
-export const NAME_KEY = 'bobas-game:name'
+export const BEST_TIME_KEY = 'duck-race:best-time'
+export const LAST_TRACK_KEY = 'duck-race:track'
+export const NAME_KEY = 'duck-race:name'
 
 // Shared by every course; the courses themselves are in track/courses.ts
 export const TRACK = {
@@ -18,7 +18,7 @@ export const TRACK = {
   bank: 0.8,
   // Spacing of the progress samples along the centreline
   sampleSpacing: 0.5,
-  // Boba starts this far behind the line
+  // Your duck starts this far behind the line
   startBehind: 3,
   // Distance between rows on the starting grid in online races
   gridRowGap: 3,
@@ -30,7 +30,7 @@ export const TRACK = {
 }
 
 // Speeds are in physics units/s, accelerations in units/s^2, turning in radians/s
-export const BOBA = {
+export const PLAYER = {
   radius: 0.8,
   maxSpeed: 16,
   accel: 12,
@@ -40,7 +40,7 @@ export const BOBA = {
   // Slow-down while coasting
   drag: 4,
   turnRate: 3,
-  // Steering only gets full authority from this speed up, so Boba can't spin on the spot
+  // Steering only gets full authority from this speed up, so your duck can't spin on the spot
   turnRefSpeed: 5,
   // How fast sideways drift dies out (1/s); lower is slidier
   grip: 4,
@@ -53,7 +53,7 @@ export const BOBA = {
 
 export const WAKE = {
   spacing: 0.9, // units travelled between ripples
-  tailOffset: 0.9, // ripples start this far behind Boba's centre
+  tailOffset: 0.9, // ripples start this far behind your duck's centre
   minSpeed: 1.5,
   life: 0.9, // seconds
   startRadius: 0.35,
@@ -64,7 +64,7 @@ export const WAKE = {
 export const CAMERA = {
   // Units visible across the screen's shorter side
   viewSize: 20,
-  // Looks ahead of Boba by this many seconds of velocity
+  // Looks ahead of your duck by this many seconds of velocity
   lookahead: 0.35,
   smoothing: 6,
 }

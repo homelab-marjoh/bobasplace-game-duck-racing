@@ -1,7 +1,7 @@
-import { BOBA } from '../config'
+import { PLAYER } from '../config'
 import type { Point } from '../track/geometry'
 
-/** What Boba should do this step: each in -1..1. */
+/** What your duck should do this step: each in -1..1. */
 export interface DriveInput {
   /** Forward (+) or brake/reverse (-). */
   throttle: number
@@ -26,7 +26,7 @@ const START_KEYS = [' ', 'Enter']
 
 /**
  * Keyboard and pointer input. Arrows/WASD drive; holding a finger or mouse button
- * on the canvas makes Boba paddle toward it. The same input doubles as the menu
+ * on the canvas makes your duck paddle toward it. The same input doubles as the menu
  * (`onMenu`): space/Enter or a tap start, left/right or a tap near an edge pick a course.
  */
 export class Controls {
@@ -53,7 +53,7 @@ export class Controls {
     canvas.addEventListener('pointercancel', this.onPointerUp)
   }
 
-  /** Input for Boba at `position` (physics units) facing `heading`. Keys win over the pointer. */
+  /** Input for your duck at `position` (physics units) facing `heading`. Keys win over the pointer. */
   read(position: Point, heading: number): DriveInput {
     if (!this.enabled) return NO_INPUT
     const throttle = (this.isHeld(THROTTLE_KEYS) ? 1 : 0) - (this.isHeld(BRAKE_KEYS) ? 1 : 0)
@@ -67,8 +67,8 @@ export class Controls {
     diff = Math.atan2(Math.sin(diff), Math.cos(diff))
     return {
       steer: Math.max(-1, Math.min(diff * 3, 1)),
-      // Ease off once the finger is right on top of Boba
-      throttle: Math.hypot(dx, dy) > BOBA.radius * 2 ? 1 : 0,
+      // Ease off once the finger is right on top of your duck
+      throttle: Math.hypot(dx, dy) > PLAYER.radius * 2 ? 1 : 0,
     }
   }
 
@@ -136,7 +136,7 @@ function normalizeKey(key: string) {
 
 // The listeners are on window, so leave typing and buttons elsewhere on the page alone.
 // composedPath() sees into shadow roots (the lobby panel), where `target` would only be
-// the <bobas-game> element.
+// the <duck-race> element.
 function isTyping(event: KeyboardEvent) {
   const target = event.composedPath()[0]
   return (

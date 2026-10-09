@@ -8,12 +8,12 @@ interface Ripple {
   age: number
 }
 
-/** Expanding, fading rings left behind Boba on the water. */
+/** Expanding, fading rings left behind your duck on the water. */
 export class Wake extends Graphics {
   private ripples: Ripple[] = []
   private travelled = 0
 
-  /** `tail` is where new ripples start (physics units), `speed` Boba's speed in units/s. */
+  /** `tail` is where new ripples start (physics units), `speed` your duck's speed in units/s. */
   update(dt: number, tail: Point, speed: number) {
     if (speed > WAKE.minSpeed) {
       this.travelled += speed * dt

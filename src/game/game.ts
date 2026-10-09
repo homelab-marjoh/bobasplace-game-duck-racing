@@ -2,9 +2,9 @@ import { Application, Container } from 'pixi.js'
 import { Viewport } from 'pixi-viewport'
 import RAPIER from '@dimforge/rapier2d-compat'
 import { Camera } from './camera'
-import { BOBA, COUNTDOWN, FIXED_DT, MAX_FRAME_TIME, SCALE, WAKE } from './config'
+import { COUNTDOWN, FIXED_DT, MAX_FRAME_TIME, PLAYER, SCALE, WAKE } from './config'
 import { PhysicsDebug } from './debug'
-import { Boba } from './entities/boba'
+import { Player } from './entities/player'
 import { Wake } from './entities/wake'
 import { Controls, type MenuAction } from './input/controls'
 import { LobbyPanel } from './online/lobbyPanel'
@@ -39,7 +39,7 @@ export interface GameOptions {
   track?: string | null
   /** Race relay WebSocket URL; defaults to /race on the server that served the game. */
   server?: string | null
-  /** Called when Boba crosses the line on the last lap. */
+  /** Called when your duck crosses the line on the last lap. */
   onFinish?: (result: RaceResult) => void
 }
 
@@ -63,7 +63,7 @@ export async function createGame(container: HTMLElement, options: GameOptions = 
   const app = new Application()
   await app.init({ resizeTo: container })
   app.canvas.style.display = 'block'
-  // Touch steers Boba, so don't let it scroll or zoom the page
+  // Touch steers your duck, so don't let it scroll or zoom the page
   app.canvas.style.touchAction = 'none'
   container.appendChild(app.canvas)
 
@@ -81,8 +81,8 @@ export async function createGame(container: HTMLElement, options: GameOptions = 
   const wakes = new Container()
   const wake = wakes.addChild(new Wake())
   const rivals = new Rivals(wakes)
-  const boba = new Boba(world)
-  viewport.addChild(wakes, rivals, boba)
+  const player = new Player(world)
+  viewport.addChild(wakes, rivals, player)
   const physicsDebug = options.debug ? viewport.addChild(new PhysicsDebug()) : undefined
 
   // Screen space
@@ -122,7 +122,7 @@ export async function createGame(container: HTMLElement, options: GameOptions = 
 
   const resetRace = (slot = 0) => {
     const pose = track.startPose(slot)
-    boba.reset(pose.x, pose.y, pose.heading)
+    player.reset(pose.x, pose.y, pose.heading)
     wake.reset()
     laps.reset(pose.index)
     finishTime = null
@@ -329,22 +329,22 @@ export async function createGame(container: HTMLElement, options: GameOptions = 
   }
 
   const physicsStep = () => {
-    const speedBefore = boba.speed
-    boba.preStep(FIXED_DT, controls.read(boba.physicsPosition, boba.physicsHeading))
+    const speedBefore = player.speed
+    player.preStep(FIXED_DT, controls.read(player.physicsPosition, player.physicsHeading))
     world.step(eventQueue)
 
-    // Boba is the only physics body that moves, so any contact is Boba hitting a bank
+    // Your duck is the only physics body that moves, so any contact is your duck hitting a bank
     eventQueue.drainCollisionEvents((_a, _b, started) => {
-      if (started) camera.shake((speedBefore / BOBA.maxSpeed) * BUMP_SHAKE)
+      if (started) camera.shake((speedBefore / PLAYER.maxSpeed) * BUMP_SHAKE)
     })
     if (state === 'racing') {
-      laps.step(FIXED_DT, boba.physicsPosition)
+      laps.step(FIXED_DT, player.physicsPosition)
       if (laps.finished) finish()
     }
   }
 
   // Fixed-timestep loop: step physics at FIXED_DT regardless of display refresh rate,
-  // then render interpolated between the last two steps. After the finish Boba coasts on.
+  // then render interpolated between the last two steps. After the finish your duck coasts on.
   let accumulator = 0
   app.ticker.add(() => {
     const dt = Math.min(app.ticker.deltaMS / 1000, MAX_FRAME_TIME)
@@ -360,19 +360,19 @@ export async function createGame(container: HTMLElement, options: GameOptions = 
     if (!simulating) accumulator = 0
 
     if (session && state === 'racing') {
-      session.sendState({ ...boba.physicsPosition, heading: boba.physicsHeading, progress: laps.distance })
+      session.sendState({ ...player.physicsPosition, heading: player.physicsHeading, progress: laps.distance })
     }
 
-    boba.update(simulating ? accumulator / FIXED_DT : 1, dt)
-    const position = boba.renderedPosition
-    const heading = boba.rotation
+    player.update(simulating ? accumulator / FIXED_DT : 1, dt)
+    const position = player.renderedPosition
+    const heading = player.rotation
     wake.update(
       dt,
       { x: position.x - Math.cos(heading) * WAKE.tailOffset, y: position.y - Math.sin(heading) * WAKE.tailOffset },
-      boba.speed,
+      player.speed,
     )
     rivals.update(dt)
-    camera.update(dt, position, boba.velocity)
+    camera.update(dt, position, player.velocity)
     hud.updateMinimap(position, rivals.dots())
     if (state === 'racing') hud.setRace(laps.lap, track.course.laps, laps.time)
     if (session && (state === 'countdown' || simulating)) {

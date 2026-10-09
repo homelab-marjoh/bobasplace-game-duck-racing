@@ -1,10 +1,10 @@
 import { createGame, type Game } from './game/game'
 
-// <bobas-game [track="clover-creek"] [server="wss://…/race"] [debug]></bobas-game>
+// <duck-race [track="clover-creek"] [server="wss://…/race"] [debug]></duck-race>
 // Fires a `race-finish` CustomEvent ({ track, time, best, newBest, laps, online }, times in ms)
-// when Boba crosses the line on the last lap.
+// when your duck crosses the line on the last lap.
 // The element fills its parent (100% x 100%) but never shrinks below
-// --bobas-game-min-width / --bobas-game-min-height (default 320px x 240px); the parent
+// --duck-race-min-width / --duck-race-min-height (default 320px x 240px); the parent
 // needs a definite height, otherwise the element falls back to the minimum. The canvas
 // follows the element's size. It lives in a shadow root so the host page's styles
 // can't affect it. `track` picks the course the menu opens on (a course id; defaults to
@@ -15,15 +15,15 @@ const STYLE = `
     display: block;
     width: 100%;
     height: 100%;
-    min-width: var(--bobas-game-min-width, 320px);
-    min-height: var(--bobas-game-min-height, 240px);
+    min-width: var(--duck-race-min-width, 320px);
+    min-height: var(--duck-race-min-height, 240px);
   }
   /* Out of flow, so the canvas can't hold the element open when its parent shrinks */
   .mount { position: relative; width: 100%; height: 100%; overflow: hidden; }
   canvas { position: absolute; inset: 0; }
 `
 
-class BobasGame extends HTMLElement {
+class DuckRaceElement extends HTMLElement {
   static observedAttributes = ['debug', 'track', 'server']
 
   private game?: Game
@@ -72,6 +72,6 @@ class BobasGame extends HTMLElement {
   }
 }
 
-if (!customElements.get('bobas-game')) {
-  customElements.define('bobas-game', BobasGame)
+if (!customElements.get('duck-race')) {
+  customElements.define('duck-race', DuckRaceElement)
 }

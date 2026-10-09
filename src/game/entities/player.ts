@@ -1,15 +1,15 @@
 import RAPIER from '@dimforge/rapier2d-compat'
 import { Container } from 'pixi.js'
-import { BOBA, SCALE } from '../config'
+import { PLAYER, SCALE } from '../config'
 import type { DriveInput } from '../input/controls'
 import type { Point } from '../track/geometry'
 import { drawDuck } from './duck'
 
 /**
- * Boba, seen from above: a duck that paddles like a slidey car. Heading is tracked here
- * rather than by the physics body, so bumping a bank never spins Boba around.
+ * The player's duck, seen from above: it paddles like a slidey car. Heading is tracked here
+ * rather than by the physics body, so bumping a bank never spins it around.
  */
-export class Boba extends Container {
+export class Player extends Container {
   rigidBody: RAPIER.RigidBody
   collider: RAPIER.Collider
 
@@ -25,11 +25,11 @@ export class Boba extends Container {
     super()
     this.addChild(this.duck)
 
-    // Rotation is locked: the heading is ours. CCD keeps fast Boba out of the banks.
+    // Rotation is locked: the heading is ours. CCD keeps a fast duck out of the banks.
     this.rigidBody = world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().lockRotations().setCcdEnabled(true))
-    // No friction, so Boba slides along a bank instead of sticking to it
+    // No friction, so your duck slides along a bank instead of sticking to it
     this.collider = world.createCollider(
-      RAPIER.ColliderDesc.ball(BOBA.radius).setFriction(0).setRestitution(0.3),
+      RAPIER.ColliderDesc.ball(PLAYER.radius).setFriction(0).setRestitution(0.3),
       this.rigidBody,
     )
     this.collider.setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS)
@@ -79,22 +79,22 @@ export class Boba extends Container {
 
     // Steering needs speed, and flips when reversing like a car
     const fwdBefore = vel.x * Math.cos(this.heading) + vel.y * Math.sin(this.heading)
-    const authority = Math.max(-1, Math.min(fwdBefore / BOBA.turnRefSpeed, 1))
-    this.heading += steer * BOBA.turnRate * authority * dt
+    const authority = Math.max(-1, Math.min(fwdBefore / PLAYER.turnRefSpeed, 1))
+    this.heading += steer * PLAYER.turnRate * authority * dt
 
     // Split the velocity along the new heading: the sideways part is drift, which
     // dies out at the grip rate, so turns slide a little
     const fx = Math.cos(this.heading)
     const fy = Math.sin(this.heading)
     let fwd = vel.x * fx + vel.y * fy
-    const side = (-vel.x * fy + vel.y * fx) * Math.exp(-BOBA.grip * dt)
+    const side = (-vel.x * fy + vel.y * fx) * Math.exp(-PLAYER.grip * dt)
 
     if (throttle > 0) {
-      fwd = Math.min(fwd + (fwd < 0 ? BOBA.brake : BOBA.accel) * dt, BOBA.maxSpeed)
+      fwd = Math.min(fwd + (fwd < 0 ? PLAYER.brake : PLAYER.accel) * dt, PLAYER.maxSpeed)
     } else if (throttle < 0) {
-      fwd = fwd > 0 ? fwd - BOBA.brake * dt : Math.max(fwd - BOBA.reverseAccel * dt, -BOBA.maxReverse)
+      fwd = fwd > 0 ? fwd - PLAYER.brake * dt : Math.max(fwd - PLAYER.reverseAccel * dt, -PLAYER.maxReverse)
     } else {
-      const step = BOBA.drag * dt
+      const step = PLAYER.drag * dt
       fwd = Math.abs(fwd) <= step ? 0 : fwd - Math.sign(fwd) * step
     }
 
@@ -112,8 +112,8 @@ export class Boba extends Container {
     this.position.set(x * SCALE, y * SCALE)
     this.rotation = this.prev.heading + (this.curr.heading - this.prev.heading) * alpha
 
-    this.waddle += dt * this.speed * BOBA.anim.waddlePerSpeed * Math.PI * 2
+    this.waddle += dt * this.speed * PLAYER.anim.waddlePerSpeed * Math.PI * 2
     if (this.speed < 0.3) this.waddle = 0
-    this.duck.rotation = Math.sin(this.waddle) * BOBA.anim.waddleRadians
+    this.duck.rotation = Math.sin(this.waddle) * PLAYER.anim.waddleRadians
   }
 }

@@ -67,7 +67,7 @@ export class Hud extends Container {
 
   layout(width: number, height: number) {
     this.size = { width, height }
-    // Above centre, so it doesn't cover Boba
+    // Above centre, so it doesn't cover your duck
     this.message.position.set(width / 2, height * 0.32)
     // Smaller and wrapped on narrow screens
     this.message.style.fontSize = Math.max(16, Math.min(28, width / 22))

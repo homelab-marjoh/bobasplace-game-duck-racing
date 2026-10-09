@@ -34,7 +34,7 @@ export class LapCounter {
     return this.laps.length >= this.track.course.laps
   }
 
-  /** Starts over with Boba at sample `startIndex`, just behind the line. */
+  /** Starts over with your duck at sample `startIndex`, just behind the line. */
   reset(startIndex: number) {
     this.time = 0
     this.laps = []
@@ -42,7 +42,7 @@ export class LapCounter {
     this.progress = startIndex - this.track.count
   }
 
-  /** Advances the clock by one physics step with Boba at `position` (physics units). */
+  /** Advances the clock by one physics step with your duck at `position` (physics units). */
   step(dt: number, position: Point) {
     this.time += dt
     const n = this.track.count

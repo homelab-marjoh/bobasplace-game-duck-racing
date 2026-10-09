@@ -6,7 +6,7 @@ import type { Track } from '../track/track'
 const SIZE = { width: 150, height: 110 }
 const PADDING = 10
 
-/** Screen-space overview of the course with a dot for Boba and any rivals. */
+/** Screen-space overview of the course with a dot for your duck and any rivals. */
 export class Minimap extends Container {
   private rivalDots = new Graphics()
   private dot = new Graphics().circle(0, 0, 4).fill(0xffd23f).stroke({ width: 1.5, color: 0x1a1a1a })
